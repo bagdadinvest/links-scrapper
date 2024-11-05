@@ -1,6 +1,5 @@
 # Import necessary libraries from Playwright
 from playwright.sync_api import sync_playwright
-import csv
 import time
 
 # Function to scrape the links from the homepage
@@ -37,11 +36,11 @@ def scrape_links_sadecegazete():
         for idx, element in enumerate(element_handles):
             print(f"[DEBUG] Processing element {idx + 1}/{len(element_handles)}...")
             href = element.get_attribute("href")
-            if href:
+            if href and href.startswith("https://www.sadecegazete.com"):  # Ensure link is strictly within the same domain
                 print(f"[DEBUG] href attribute found: {href}")  # Print every href found
                 post_links.append(href)
             else:
-                print(f"[DEBUG] No href attribute found for element {idx + 1}")
+                print(f"[DEBUG] No valid href attribute found for element {idx + 1}")
 
         # Close the browser
         print("[DEBUG] Closing the browser...")
@@ -50,17 +49,7 @@ def scrape_links_sadecegazete():
         # Return the list of post links
         return post_links
 
-# Function to save links to a CSV file
-def save_links_to_csv(links, filename="sadecegazete_links.csv"):
-    print(f"[DEBUG] Saving {len(links)} links to CSV file: {filename}")
-    with open(filename, mode="w", newline="", encoding="utf-8") as file:
-        writer = csv.writer(file)
-        writer.writerow(["Post Links"])
-        for link in links:
-            writer.writerow([link])
-    print("[DEBUG] CSV file saved successfully.")
-
-# Run the script, print the links, and save them to a CSV file
+# Run the script, print the links
 if __name__ == "__main__":
     print("[DEBUG] Starting link scraping process for Sadece Gazete...")
     links = scrape_links_sadecegazete()
@@ -68,7 +57,5 @@ if __name__ == "__main__":
         print("[DEBUG] Links found:")
         for link in links:
             print(link)
-        save_links_to_csv(links)
-        print(f"Saved {len(links)} links to 'sadecegazete_links.csv'")
     else:
         print("No links found. Please check the page structure or adjust the script.")

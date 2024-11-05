@@ -1,6 +1,5 @@
 # Import necessary libraries from Playwright
 from playwright.sync_api import sync_playwright
-import csv
 import time
 
 # Function to scrape the links from the homepage
@@ -37,7 +36,7 @@ def scrape_links_nuanshaber():
         for idx, element in enumerate(element_handles):
             print(f"[DEBUG] Processing element {idx + 1}/{len(element_handles)}...")
             href = element.get_attribute("href")
-            if href and "nuanshaber.com" in href:  # Ensure link is within the same domain
+            if href and href.startswith("https://www.nuanshaber.com"):  # Ensure link is strictly within the same domain
                 print(f"[DEBUG] href attribute found: {href}")  # Print every href found
                 post_links.append(href)
             else:
@@ -50,17 +49,7 @@ def scrape_links_nuanshaber():
         # Return the list of post links
         return post_links
 
-# Function to save links to a CSV file
-def save_links_to_csv(links, filename="nuanshaber_links.csv"):
-    print(f"[DEBUG] Saving {len(links)} links to CSV file: {filename}")
-    with open(filename, mode="w", newline="", encoding="utf-8") as file:
-        writer = csv.writer(file)
-        writer.writerow(["Post Links"])
-        for link in links:
-            writer.writerow([link])
-    print("[DEBUG] CSV file saved successfully.")
-
-# Run the script, print the links, and save them to a CSV file
+# Run the script, print the links
 if __name__ == "__main__":
     print("[DEBUG] Starting link scraping process for Nuans Haber...")
     links = scrape_links_nuanshaber()
@@ -68,7 +57,5 @@ if __name__ == "__main__":
         print("[DEBUG] Links found:")
         for link in links:
             print(link)
-        save_links_to_csv(links)
-        print(f"Saved {len(links)} links to 'nuanshaber_links.csv'")
     else:
         print("No links found. Please check the page structure or adjust the script.")
